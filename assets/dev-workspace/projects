@@ -1,0 +1,9 @@
+# dev-workspace 项目注册表
+# 格式: 别名=路径
+# 添加新项目只需加一行
+
+axon-web=$HOME/axon-web
+axon-web-server=$HOME/axon_web_server
+mino-server=$HOME/mino_server
+template-sync=$HOME/Desktop/template-sync
+anygen-extension=$HOME/anygen-extension
