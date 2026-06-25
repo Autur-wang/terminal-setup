@@ -34,6 +34,12 @@ deploy() {
 
 echo "=== 1) 部署配置文件 ==="
 deploy ghostty/config                "$HOME/.config/ghostty/config"
+# 把 ghostty config 里写死的 /Users/bytedance 改写成本机 $HOME（command= 与 custom-shader= 路径）
+if grep -q '/Users/bytedance' "$HOME/.config/ghostty/config" 2>/dev/null; then
+  sed "s#/Users/bytedance#$HOME#g" "$HOME/.config/ghostty/config" > "$HOME/.config/ghostty/config.tmp" \
+    && mv "$HOME/.config/ghostty/config.tmp" "$HOME/.config/ghostty/config"
+  echo "  ↳ 已将 ghostty config 中的 /Users/bytedance 改写为 $HOME"
+fi
 deploy tmux/.tmux.conf               "$HOME/.tmux.conf"
 deploy zsh/.zshrc                    "$HOME/.zshrc"
 deploy dev-workspace/dev-workspace   "$HOME/.local/bin/dev-workspace"            755
@@ -41,6 +47,14 @@ deploy dev-workspace/projects        "$HOME/.config/dev-workspace/projects"
 deploy dev-workspace/reset-layout.sh "$HOME/.config/dev-workspace/reset-layout.sh" 755
 deploy dev-workspace/claude-workflow.sh "$HOME/.local/bin/claude-workflow"       755
 deploy claude-code/statusline-command.sh "$HOME/.claude/statusline-command.sh"   755
+
+# Ghostty 自定义 shader（星空 / 流星光标 / 黑洞）
+if [ -d "$ASSETS/ghostty/shaders" ]; then
+  for shader in "$ASSETS"/ghostty/shaders/*.glsl; do
+    [ -f "$shader" ] || continue
+    deploy "ghostty/shaders/$(basename "$shader")" "$HOME/.config/ghostty/shaders/$(basename "$shader")"
+  done
+fi
 
 echo ""
 echo "=== 2) 建立 skill symlink（Claude / Codex 共享同一真实源）==="
